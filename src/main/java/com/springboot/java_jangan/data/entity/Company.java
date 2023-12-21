@@ -31,5 +31,7 @@ public class Company extends BaseEntity{
     @Column
     private String email; // 연락처
 
+    @Column(nullable = false)
+    private Integer used;
 
 }

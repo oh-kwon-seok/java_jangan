@@ -4,10 +4,13 @@ package com.springboot.java_jangan.data.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,17 +25,46 @@ import java.util.stream.Collectors;
 @Table
 @Data
 public class User implements UserDetails {
-    
+
+
     @Id
     @Column(nullable = false, unique = true)
     private String id;
+
+    @Column(nullable = false)
+    private String code;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+
     private String name;
+    private String customer_name;
+
+    private String email;
+    private String phone;
+
+
+    @ManyToOne
+    @JoinColumn(name="car_uid")
+    private Car car;
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime created;
+
+    @LastModifiedDate
+    private LocalDateTime updated;
+
+    @LastModifiedDate
+    private LocalDateTime deleted;
+
+
+    private Integer used;
+
+
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

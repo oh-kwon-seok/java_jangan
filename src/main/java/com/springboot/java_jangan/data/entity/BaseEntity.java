@@ -30,6 +30,6 @@ public class BaseEntity {
     private LocalDateTime deleted;
 
 
-    private Integer used;
+
 
 }

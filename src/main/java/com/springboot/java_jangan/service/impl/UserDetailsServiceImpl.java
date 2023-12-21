@@ -2,7 +2,7 @@ package com.springboot.java_jangan.service.impl;
 
 
 import ch.qos.logback.classic.Logger;
-import com.springboot.java_jangan.data.repository.UserRepository;
+import com.springboot.java_jangan.data.repository.User.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;

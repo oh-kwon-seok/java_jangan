@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -39,6 +40,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(List<Long> uid) throws Exception {
         productDAO.deleteProduct(uid);
+    }
+
+    @Override
+    public void excelUploadProduct(List<Map<String, Object>> requestList) throws Exception {
+        productDAO.excelUploadProduct(requestList);
     }
 
 }

@@ -5,7 +5,6 @@ import com.springboot.java_jangan.authentication.domain.oauth.OAuthProvider;
 import com.springboot.java_jangan.authentication.domain.oauth.OAuthApiClient;
 import com.springboot.java_jangan.authentication.domain.oauth.OAuthInfoResponse;
 import com.springboot.java_jangan.authentication.domain.oauth.OAuthLoginParams;
-import com.springboot.java_jangan.controller.OriginController;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class KakaoApiClient implements OAuthApiClient {
-    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(OriginController.class);
+
     private static final String GRANT_TYPE = "authorization_code";
 
     @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
@@ -71,7 +70,7 @@ public class KakaoApiClient implements OAuthApiClient {
 
 
 
-        LOGGER.info("[REQUEST] response Time: {}", authUrl);
+
         HttpEntity<?> request = new HttpEntity<>(body, httpHeaders);
 
 
@@ -80,7 +79,6 @@ public class KakaoApiClient implements OAuthApiClient {
             public boolean hasError(ClientHttpResponse response) throws IOException {
                 HttpStatus statusCode = (HttpStatus) response.getStatusCode();
 
-                LOGGER.info("[STATUS_CODE] response Time: {}", statusCode);
 
                 return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
             }
@@ -89,7 +87,7 @@ public class KakaoApiClient implements OAuthApiClient {
         KakaoTokens response = restTemplate.postForObject(url, request, KakaoTokens.class);
 
 
-        LOGGER.info("[RESPONSE] response Time: {}", response);
+
         assert response != null;
         return response.getAccessToken();
     }

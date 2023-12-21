@@ -40,8 +40,7 @@ public class QCompany extends EntityPathBase<Company> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updated = _super.updated;
 
-    //inherited
-    public final NumberPath<Integer> used = _super.used;
+    public final NumberPath<Integer> used = createNumber("used", Integer.class);
 
     public QCompany(String variable) {
         super(Company.class, forVariable(variable));

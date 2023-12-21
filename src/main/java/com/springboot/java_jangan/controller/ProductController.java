@@ -49,7 +49,12 @@ public class ProductController {
         Product insertProduct = productService.saveProduct(productDto);
         LOGGER.info("[createProduct] response Time : {}ms", System.currentTimeMillis() - currentTime);
         return ResponseEntity.status(HttpStatus.OK).body(insertProduct);
+
+
+
+
     }
+
     @PostMapping(value= "/update", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Product> updateProduct(@RequestBody ProductDto productDto)
             throws Exception{
@@ -66,6 +71,15 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@RequestBody Map<String, List<Long>> requestMap) throws Exception {
         List<Long> uid = requestMap.get("uid");
         productService.deleteProduct(uid);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
+    }
+
+    @PostMapping(value= "/excel_upload", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> excelUploadProduct(@RequestBody Map<String, List<Map<String, Object>>> requestMap) throws Exception {
+        List<Map<String, Object>> requestList = requestMap.get("data");
+        LOGGER.info("LIST : {}",requestList);
+
+                productService.excelUploadProduct(requestList);
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
     }
 

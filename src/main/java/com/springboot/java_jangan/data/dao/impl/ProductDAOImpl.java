@@ -5,17 +5,17 @@ import com.springboot.java_jangan.data.dao.ProductDAO;
 import com.springboot.java_jangan.data.dto.product.ProductDto;
 import com.springboot.java_jangan.data.dto.product.ProductSearchDto;
 import com.springboot.java_jangan.data.entity.*;
-import com.springboot.java_jangan.data.repository.origin.OriginRepository;
+
+import com.springboot.java_jangan.data.repository.company.CompanyRepository;
 import com.springboot.java_jangan.data.repository.product.ProductRepository;
-import com.springboot.java_jangan.data.repository.standard.StandardRepository;
-import com.springboot.java_jangan.data.repository.type.TypeRepository;
-import com.springboot.java_jangan.data.repository.unit.UnitRepository;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -24,42 +24,33 @@ public class ProductDAOImpl implements ProductDAO {
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(ProductDAOImpl.class);
 
     private final ProductRepository productRepository;
-    private final UnitRepository unitRepository;
-    private final StandardRepository standardRepository;
-    private final OriginRepository originRepository;
-    private final TypeRepository typeRepository;
+    private final CompanyRepository companyRepository;
+
+
 
 
     @Autowired
     public ProductDAOImpl(ProductRepository productRepository,
-                          UnitRepository unitRepository,
-                          StandardRepository standardRepository,
-                          OriginRepository originRepository,
-                          TypeRepository typeRepository
-    ) {
+
+                          CompanyRepository companyRepository) {
         this.productRepository = productRepository;
-        this.unitRepository = unitRepository;
-        this.standardRepository = standardRepository;
-        this.originRepository = originRepository;
-        this.typeRepository = typeRepository;
+
+        this.companyRepository = companyRepository;
     }
 
     @Override
     public Product insertProduct(ProductDto productDto) throws Exception {
 
-        Unit unit = unitRepository.findByUid(Long.valueOf(productDto.getUnit_uid()));
-        Standard standard = standardRepository.findByUid(Long.valueOf(productDto.getStandard_uid()));
-        Origin origin = originRepository.findByUid(Long.valueOf(productDto.getOrigin_uid()));
-        Type type = typeRepository.findByUid(Long.valueOf(productDto.getType_uid()));
+        Company company = companyRepository.findByUid(productDto.getCompany_uid());
+
 
         Product product = new Product();
 
         product.setName(productDto.getName());
+        product.setType(productDto.getType());
+        product.setCompany(company);
         product.setUsed(Math.toIntExact(productDto.getUsed()));
-        product.setUnit(unit);
-        product.setStandard(standard);
-        product.setOrigin(origin);
-        product.setType(type);
+
         product.setCreated(LocalDateTime.now());
 
 
@@ -80,10 +71,8 @@ public class ProductDAOImpl implements ProductDAO {
     @Override
     public Product updateProduct(ProductDto productDto) throws Exception {
 
-        Unit unit = unitRepository.findByUid(Long.valueOf(productDto.getUnit_uid()));
-        Standard standard = standardRepository.findByUid(Long.valueOf(productDto.getStandard_uid()));
-        Origin origin = originRepository.findByUid(Long.valueOf(productDto.getOrigin_uid()));
-        Type type = typeRepository.findByUid(Long.valueOf(productDto.getType_uid()));
+        Company company = companyRepository.findByUid(productDto.getCompany_uid());
+
         Optional<Product> selectedProduct = productRepository.findById(productDto.getUid());
 
         Product updatedProduct;
@@ -91,11 +80,10 @@ public class ProductDAOImpl implements ProductDAO {
         if (selectedProduct.isPresent()) {
             Product product = selectedProduct.get();
             product.setName(productDto.getName());
+            product.setType(productDto.getType());
+            product.setCompany(company);
             product.setUsed(Math.toIntExact(productDto.getUsed()));
-            product.setUnit(unit);
-            product.setStandard(standard);
-            product.setOrigin(origin);
-            product.setType(type);
+
             product.setUpdated(LocalDateTime.now());
             updatedProduct = productRepository.save(product);
         } else {
@@ -116,6 +104,41 @@ public class ProductDAOImpl implements ProductDAO {
                 productRepository.save(product);
             } else {
                 throw new Exception("Product with UID " + uid + " not found.");
+            }
+        }
+        return "Products deleted successfully";
+    }
+
+    @Override
+    public String excelUploadProduct(List<Map<String, Object>> requestList) throws Exception {
+
+        for (Map<String, Object> data : requestList) {
+            String name = (String) data.get("name");
+            String type = (String) data.get("type");
+
+            // 예시로 이름과 수량이 모두 일치하는 Product를 찾는 메서드를 가정
+            Optional<Product> selectedProduct = Optional.ofNullable(productRepository.findByNameAndType(name, type));
+
+            if (selectedProduct.isPresent()) {
+                Product product = selectedProduct.get();
+
+                product.setName(name);
+                product.setType(type);
+                product.setUsed(1);
+                product.setUpdated(LocalDateTime.now());
+                productRepository.save(product);
+            } else {
+                Product product = new Product();
+
+                product.setName(name);
+                product.setType(type);
+
+                product.setUsed(1);
+
+                product.setCreated(LocalDateTime.now());
+                productRepository.save(product);
+
+
             }
         }
         return "Products deleted successfully";

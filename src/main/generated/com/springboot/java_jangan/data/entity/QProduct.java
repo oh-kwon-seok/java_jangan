@@ -24,6 +24,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final QCompany company;
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> created = _super.created;
 
@@ -32,21 +34,14 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath name = createString("name");
 
-    public final QOrigin origin;
-
-    public final QStandard standard;
-
-    public final QType type;
+    public final StringPath type = createString("type");
 
     public final NumberPath<Long> uid = createNumber("uid", Long.class);
-
-    public final QUnit unit;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updated = _super.updated;
 
-    //inherited
-    public final NumberPath<Integer> used = _super.used;
+    public final NumberPath<Integer> used = createNumber("used", Integer.class);
 
     public QProduct(String variable) {
         this(Product.class, forVariable(variable), INITS);
@@ -66,10 +61,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.origin = inits.isInitialized("origin") ? new QOrigin(forProperty("origin")) : null;
-        this.standard = inits.isInitialized("standard") ? new QStandard(forProperty("standard")) : null;
-        this.type = inits.isInitialized("type") ? new QType(forProperty("type")) : null;
-        this.unit = inits.isInitialized("unit") ? new QUnit(forProperty("unit")) : null;
+        this.company = inits.isInitialized("company") ? new QCompany(forProperty("company")) : null;
     }
 
 }

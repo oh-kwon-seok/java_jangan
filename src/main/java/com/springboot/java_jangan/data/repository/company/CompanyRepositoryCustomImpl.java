@@ -34,12 +34,29 @@ public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
 
         if("all".equals(filter_title)){
+
+            if (company.code != null) {
+                builder.or(company.code.like("%" + search_text + "%"));
+            }
             if (company.name != null) {
                 builder.or(company.name.like("%" + search_text + "%"));
             }
+            if (company.email != null) {
+                builder.or(company.email.like("%" + search_text + "%"));
+            }
+            if (company.phone != null) {
+                builder.or(company.email.like("%" + search_text + "%"));
+            }
         }else {
-            if("name".equals(filter_title)){
+            if("code".equals(filter_title)){
+                builder.and(company.code.like("%" + search_text + "%"));
+            }
+            else if("name".equals(filter_title)){
                 builder.and(company.name.like("%" + search_text + "%"));
+            }else if("phone".equals(filter_title)){
+                builder.and(company.phone.like("%" + search_text + "%"));
+            }else if("email".equals(filter_title)){
+                builder.and(company.email.like("%" + search_text + "%"));
             }
         }
         Predicate dateRange = company.created.between(start_date, end_date);

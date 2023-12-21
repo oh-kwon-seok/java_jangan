@@ -23,5 +23,8 @@ public class Car extends BaseEntity{
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Integer used;
+
 
 }

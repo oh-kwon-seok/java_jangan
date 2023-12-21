@@ -23,19 +23,14 @@ public class Product extends BaseEntity{
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String type;
     @ManyToOne
-    @JoinColumn(name="unit_uid")
-    private Unit unit;
+    @JoinColumn(name="company_uid")
+    private Company company;
 
-    @ManyToOne
-    @JoinColumn(name="type_uid")
-    private Type type;
-    @ManyToOne
-    @JoinColumn(name="origin_uid")
-    private Origin origin;
-    @ManyToOne
-    @JoinColumn(name="standard_uid")
-    private Standard standard;
+    @Column(nullable = false)
+    private Integer used;
 
 
 }

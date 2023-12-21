@@ -27,12 +27,7 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
     @Override
     public List<Product> findAll(ProductSearchDto productSearchDto){
         QProduct product = QProduct.product;
-        QUnit unit = QUnit.unit;
-        QStandard standard = QStandard.standard;
-        QOrigin origin = QOrigin.origin;
-        QType type = QType.type;
-
-
+        QCompany company = QCompany.company;
         String filter_title = productSearchDto.getFilter_title();
         String search_text = productSearchDto.getSearch_text();
 
@@ -45,36 +40,26 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         if("all".equals(filter_title)){
             if (product.name != null) {
-               builder.or(product.name.like("%" + search_text + "%"));
-            }
-            if (product.unit != null) {
-                builder.or(unit.name.like("%" + search_text + "%"));
+                builder.or(product.name.like("%" + search_text + "%"));
             }
             if (product.type != null) {
-                builder.or(type.name.like("%" + search_text + "%"));
+                builder.or(product.type.like("%" + search_text + "%"));
             }
-            if (product.origin != null) {
-                builder.or(origin.name.like("%" + search_text + "%"));
+
+            if (product.company != null) {
+                builder.or(company.name.like("%" + search_text + "%"));
             }
-            if (product.standard != null) {
-                builder.or(standard.name.like("%" + search_text + "%"));
-            }
+
         }else {
             if("name".equals(filter_title)){
                 builder.and(product.name.like("%" + search_text + "%"));
+            }else if("company".equals(filter_title)){
+                builder.and(company.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(type.name.like("%" + search_text + "%"));
+                builder.and(product.type.like("%" + search_text + "%"));
             }
-            else if("unit".equals(filter_title)){
-                builder.and(unit.name.like("%" + search_text + "%"));
-            }
-            else if("origin".equals(filter_title)){
-                builder.and(origin.name.like("%" + search_text + "%"));
-            }
-            else if("standard".equals(filter_title)){
-                builder.and(standard.name.like("%" + search_text + "%"));
-            }
+
 
         }
         Predicate dateRange = product.created.between(start_date, end_date);
@@ -84,11 +69,8 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
 
         List<Tuple> results = from(product)
-                .leftJoin(product.unit, unit)
-                .leftJoin(product.standard, standard).fetchJoin() // Left join standard
-                .leftJoin(product.origin, origin).fetchJoin() // Left join origin
-                .leftJoin(product.type, type).fetchJoin() // Left join type
-                .select(product, unit, standard, origin, type)
+                .leftJoin(product.company, company).fetchJoin()
+                .select(product,company)
                 .where(predicate,dateRange,used)
                 .orderBy(product.created.desc()) // Order by created field in descending order
                 .fetch();

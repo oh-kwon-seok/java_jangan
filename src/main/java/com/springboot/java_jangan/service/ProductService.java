@@ -8,6 +8,7 @@ import com.springboot.java_jangan.data.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ProductService {
@@ -19,6 +20,8 @@ public interface ProductService {
     Product updateProduct(ProductDto productDto) throws Exception;
 
     void deleteProduct(List<Long> uid) throws Exception;
+
+    void excelUploadProduct(List<Map<String, Object>> requestList) throws Exception;
 
 
 }
