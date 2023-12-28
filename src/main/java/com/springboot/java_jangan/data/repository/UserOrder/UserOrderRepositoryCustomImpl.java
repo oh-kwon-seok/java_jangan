@@ -35,6 +35,8 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         QUser user = QUser.user;
         QCar car = QCar.car;
+        QUserOrderSub userOrderSub = QUserOrderSub.userOrderSub;
+
 
         String filter_title = userOrderSearchDto.getFilter_title();
         String search_text = userOrderSearchDto.getSearch_text();
@@ -96,6 +98,8 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
         List<Tuple> results = from(userOrder)
                 .leftJoin(userOrder.car, car).fetchJoin()
                 .leftJoin(userOrder.user, user).fetchJoin()
+
+
                 .select(userOrder,user,car)
                 .where(predicate,used,dateRange)
                 .orderBy(userOrder.created.desc()) // Order by created field in descending order

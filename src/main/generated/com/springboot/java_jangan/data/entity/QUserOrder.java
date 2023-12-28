@@ -32,13 +32,21 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> deleted = _super.deleted;
 
+    public final StringPath description = createString("description");
+
+    public final StringPath image_url = createString("image_url");
+
     public final StringPath order_status = createString("order_status");
 
     public final StringPath price_status = createString("price_status");
 
+    public final StringPath ship_image_url = createString("ship_image_url");
+
     public final NumberPath<java.math.BigDecimal> totalBuyPrice = createNumber("totalBuyPrice", java.math.BigDecimal.class);
 
     public final NumberPath<java.math.BigDecimal> totalSupplyPrice = createNumber("totalSupplyPrice", java.math.BigDecimal.class);
+
+    public final NumberPath<java.math.BigDecimal> totalUnpaidPrice = createNumber("totalUnpaidPrice", java.math.BigDecimal.class);
 
     public final NumberPath<Long> uid = createNumber("uid", Long.class);
 

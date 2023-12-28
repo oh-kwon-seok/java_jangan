@@ -20,6 +20,9 @@ public class UserOrderDto {
 
     private String order_status;
     private String price_status;
+    private String description;
+    private String image_url;
+    private String ship_image_url;
 
 
 
@@ -35,9 +38,13 @@ public class UserOrderDto {
                 Long uid,
                 String user_id,
                 Long car_uid,
-
                 String order_status,
                 String price_status,
+                String description,
+
+                String image_url,
+                String ship_image_url,
+
                 Long used,
                 String token,
 
@@ -48,6 +55,9 @@ public class UserOrderDto {
         this.car_uid = car_uid;
         this.order_status = order_status;
         this.price_status = price_status;
+        this.description = description;
+        this.image_url = image_url;
+        this.ship_image_url = ship_image_url;
         this.used = used;
         this.token = token;
 

@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @Entity
@@ -36,6 +37,14 @@ public class UserOrder extends BaseEntity{
     @Column(nullable = false)
     private String price_status;
 
+    @Column
+    private String description;
+
+    @Column
+    private String image_url;
+    @Column
+    private String ship_image_url;
+
     @Column(nullable = false)
     private Integer used;
 
@@ -44,6 +53,14 @@ public class UserOrder extends BaseEntity{
 
     @Formula("(SELECT COALESCE(SUM(uos.supply_price), 0) FROM user_order_sub uos WHERE uos.user_order_uid = uid)")
     private BigDecimal totalSupplyPrice;
+
+
+    @Formula("(SELECT COALESCE(SUM(uos.supply_price), 0) " +
+            "FROM user_order_sub uos " +
+            "WHERE uos.user_order_uid IN " +
+            "  (SELECT uo.uid FROM user_order uo WHERE uo.user_id = user_id AND uo.price_status = '미수금'))")
+    private BigDecimal totalUnpaidPrice;
+
 
 
 }

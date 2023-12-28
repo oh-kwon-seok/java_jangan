@@ -64,6 +64,8 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
         userOrder.setOrder_status(String.valueOf(userOrderDto.getOrder_status()));
         userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
+        userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
+
         userOrder.setUser(user);
         userOrder.setCar(car);
         userOrder.setUsed(Math.toIntExact(userOrderDto.getUsed()));
@@ -145,6 +147,10 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
             userOrder.setOrder_status(String.valueOf(userOrderDto.getOrder_status()));
             userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
+            userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
+
+            userOrder.setShip_image_url(String.valueOf(userOrderDto.getShip_image_url()));
+
             userOrder.setUser(user);
             userOrder.setCar(car);
             userOrder.setUsed(Math.toIntExact(userOrderDto.getUsed()));
