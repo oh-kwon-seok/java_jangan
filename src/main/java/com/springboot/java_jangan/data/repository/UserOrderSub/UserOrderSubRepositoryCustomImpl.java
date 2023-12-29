@@ -163,7 +163,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
 
 
         Predicate predicate = builder.getValue();
-
+        LOGGER.info("dateRange : {},{},{}",dateRange,buy_filter,predicate);
         LOGGER.info("pre : {}",predicate);
         LOGGER.info("buy11 : {}",userOrderSub.buy_price);
 
@@ -171,17 +171,23 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 .leftJoin(userOrderSub.product, product).fetchJoin()
                 .leftJoin(userOrderSub.userOrder, userOrder).fetchJoin()
                 .select(userOrderSub,product,userOrder)
-                .where(buy_filter,predicate,dateRange)
+                .where(dateRange,buy_filter,predicate)
                 .orderBy(product.company.name.desc(),userOrder.car.name.desc(),userOrderSub.updated.desc())
                 .fetch();
 
+
+
         List<UserOrderSub> userOrderSubList = new ArrayList<>();
 
-        LOGGER.info("test5 : {}",userOrderSubList);
+
         for (Tuple result : results) {
             UserOrderSub userOrderSubEntity = result.get(userOrderSub);
+
+
+
             userOrderSubList.add(userOrderSubEntity);
         }
+
         return userOrderSubList;
 
     }

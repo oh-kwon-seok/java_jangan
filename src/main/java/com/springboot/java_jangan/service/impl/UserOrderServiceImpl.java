@@ -23,6 +23,13 @@ public class UserOrderServiceImpl implements UserOrderService {
 
 
     @Override
+    public List<UserOrder> getUserOrder(UserOrderSearchDto userOrderSearchDto){
+        return userOrderDAO.selectUserOrder(userOrderSearchDto);
+    }
+
+
+
+    @Override
     public List<UserOrder> getTotalUserOrder(UserOrderSearchDto userOrderSearchDto){
         return userOrderDAO.selectTotalUserOrder(userOrderSearchDto);
     }

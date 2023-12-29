@@ -206,6 +206,12 @@ public class UserOrderDAOImpl implements UserOrderDAO {
         }
     }
 
+
+    @Override
+    public List<UserOrder> selectUserOrder(UserOrderSearchDto userOrderSearchDto) {
+        return userOrderRepository.findAllByDashboard(userOrderSearchDto);
+
+    }
     @Override
     public List<UserOrder> selectTotalUserOrder(UserOrderSearchDto userOrderSearchDto) {
         return userOrderRepository.findAll(userOrderSearchDto);

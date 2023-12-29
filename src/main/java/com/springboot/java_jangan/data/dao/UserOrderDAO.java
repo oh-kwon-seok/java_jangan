@@ -11,6 +11,7 @@ import java.util.List;
 public interface UserOrderDAO {
 
 
+    List<UserOrder> selectUserOrder(UserOrderSearchDto userOrderSearchDto);
     List<UserOrder> selectTotalUserOrder(UserOrderSearchDto userOrderSearchDto);
 
      UserOrderResultDto insertUserOrder(UserOrderDto userOrderDto)  throws Exception;

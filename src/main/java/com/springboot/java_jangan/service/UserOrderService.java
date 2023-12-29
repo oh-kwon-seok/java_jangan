@@ -12,6 +12,9 @@ import java.util.List;
 @Service
 public interface UserOrderService {
 
+
+    List<UserOrder> getUserOrder(UserOrderSearchDto userOrderSearchDto);
+
     List<UserOrder> getTotalUserOrder(UserOrderSearchDto userOrderSearchDto);
 
 

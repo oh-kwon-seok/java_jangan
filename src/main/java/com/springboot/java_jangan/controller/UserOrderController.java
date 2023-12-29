@@ -6,7 +6,9 @@ import com.springboot.java_jangan.data.dao.UserOrderDAO;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderDto;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderResultDto;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderSearchDto;
+import com.springboot.java_jangan.data.dto.userOrderSub.UserOrderSubSearchDto;
 import com.springboot.java_jangan.data.entity.UserOrder;
+import com.springboot.java_jangan.data.entity.UserOrderSub;
 import com.springboot.java_jangan.service.UserOrderService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,20 @@ public class UserOrderController {
     @Autowired
     public UserOrderController(UserOrderService userOrderService){
         this.userOrderService = userOrderService;
+    }
+
+
+    @GetMapping(value= "/info_select")
+    public ResponseEntity<List<UserOrder>> getUserOrder(@ModelAttribute UserOrderSearchDto userOrderSearchDto) throws RuntimeException{
+
+        long currentTime = System.currentTimeMillis();
+
+        List<UserOrder> selectedUserOrder = userOrderService.getUserOrder(userOrderSearchDto);
+
+        LOGGER.info("[getTotalUserOrderSub] response Time: {}ms,{}", System.currentTimeMillis() - currentTime);
+
+        return ResponseEntity.status(HttpStatus.OK).body(selectedUserOrder);
+
     }
 
     @GetMapping(value= "/select")

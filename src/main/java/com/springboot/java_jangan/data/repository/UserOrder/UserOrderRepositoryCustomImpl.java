@@ -29,13 +29,54 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     private final Logger LOGGER = (Logger) LoggerFactory.getLogger(ProductController.class);
 
+
+
+
+
+    @Override
+    public List<UserOrder> findAllByDashboard(UserOrderSearchDto userOrderSearchDto){
+        QUserOrder userOrder = QUserOrder.userOrder;
+
+        QUser user = QUser.user;
+        QCar car = QCar.car;
+
+
+
+
+        // used 필드가 1인 항목만 검색 조건 추가
+        Predicate used = userOrder.used.eq(1);
+
+
+
+        List<Tuple> results = from(userOrder)
+                .leftJoin(userOrder.car, car).fetchJoin()
+                .leftJoin(userOrder.user, user).fetchJoin()
+
+
+                .select(userOrder,user,car)
+                .where(used)
+                .orderBy(userOrder.created.desc()) // Order by created field in descending order
+                .fetch();
+
+
+        List<UserOrder> userOrderList = new ArrayList<>();
+
+        for (Tuple result : results) {
+            UserOrder userOrderEntity = result.get(userOrder);
+            userOrderList.add(userOrderEntity);
+        }
+        return userOrderList;
+
+    }
+
+
     @Override
     public List<UserOrder> findAll(UserOrderSearchDto userOrderSearchDto){
         QUserOrder userOrder = QUserOrder.userOrder;
 
         QUser user = QUser.user;
         QCar car = QCar.car;
-        QUserOrderSub userOrderSub = QUserOrderSub.userOrderSub;
+
 
 
         String filter_title = userOrderSearchDto.getFilter_title();
@@ -107,8 +148,6 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
 
         List<UserOrder> userOrderList = new ArrayList<>();
-
-        LOGGER.info("test5 : {}",userOrderList);
 
         for (Tuple result : results) {
             UserOrder userOrderEntity = result.get(userOrder);
