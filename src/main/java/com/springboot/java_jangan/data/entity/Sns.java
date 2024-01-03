@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Sns {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,7 @@ public class Sns {
 
     private String nickname;
 
+    @Enumerated(EnumType.STRING)
     private OAuthProvider oAuthProvider;
 
     @Builder

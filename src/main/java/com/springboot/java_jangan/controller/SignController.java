@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:5173") // 🌟 추가
+
 
 @RequestMapping("/user")
 public class SignController {

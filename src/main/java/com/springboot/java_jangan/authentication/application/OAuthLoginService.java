@@ -1,4 +1,5 @@
 package com.springboot.java_jangan.authentication.application;
+import ch.qos.logback.classic.Logger;
 import com.springboot.java_jangan.authentication.domain.AuthTokens;
 import com.springboot.java_jangan.authentication.domain.AuthTokensGenerator;
 import com.springboot.java_jangan.authentication.domain.oauth.*;
@@ -6,6 +7,7 @@ import com.springboot.java_jangan.data.repository.SnsRepository;
 import com.springboot.java_jangan.data.entity.Sns;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,9 +17,14 @@ public class OAuthLoginService {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
 
+    private final Logger LOGGER = (Logger) LoggerFactory.getLogger(AuthController.class);
+
     public AuthTokens login(OAuthLoginParams params) {
+        LOGGER.info("TET : {}",params);
         OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
+        LOGGER.info("AuthInfoResponse : {}",oAuthInfoResponse);
         Long snsId = findOrCreateSns(oAuthInfoResponse);
+        LOGGER.info("snsId : {}",snsId);
         return authTokensGenerator.generate(snsId);
     }
 

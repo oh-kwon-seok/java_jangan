@@ -43,8 +43,8 @@ public class SecurityConfiguration  {
 
                         .anyRequest().hasRole("ADMIN")
 
-                      .and()
-                        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+//                      .and()
+//                        .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
 
 
                 );
