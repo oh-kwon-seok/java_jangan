@@ -34,7 +34,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String code;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(nullable = false)
     private String password;
 

@@ -17,6 +17,8 @@ public interface UserOrderService {
 
     List<UserOrder> getTotalUserOrder(UserOrderSearchDto userOrderSearchDto);
 
+    List<UserOrder> getMobileTempTotalUserOrder(UserOrderSearchDto userOrderSearchDto);
+
 
     UserOrderResultDto saveUserOrder(UserOrderDto userOrderDto) throws Exception;
 

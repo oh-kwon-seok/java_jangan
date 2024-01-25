@@ -13,5 +13,7 @@ public interface UserOrderRepositoryCustom {
     List<UserOrder> findAllByDashboard(UserOrderSearchDto userOrderSearchDto);
     List<UserOrder> findAll(UserOrderSearchDto userOrderSearchDto);
 
+    List<UserOrder> findAllByMobileTemp(UserOrderSearchDto userOrderSearchDto);
+
 
 }

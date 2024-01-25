@@ -254,14 +254,20 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
 
         Predicate predicate = builder.getValue();
 
+        Predicate orderStatus = userOrder.order_status.ne("장바구니");
+
         LOGGER.info("pre : {}",predicate);
 
         List<Tuple> results = from(userOrderSub)
                 .leftJoin(userOrderSub.product, product).fetchJoin()
                 .leftJoin(userOrderSub.userOrder, userOrder).fetchJoin()
                 .select(userOrderSub,product,userOrder)
-                .where(predicate,dateRange,userId)
-                .orderBy(userOrderSub.created.desc(),product.name.desc())
+                .where(predicate,dateRange,userId,orderStatus)
+                .orderBy(
+                        userOrderSub.created.desc(),  // 날짜 기준으로 내림차순 정렬
+                        product.type.desc(),           // 타입 기준으로 내림차순 정렬
+                        userOrderSub.created.asc()     // 추가적으로 날짜를 오름차순으로 정렬 (동일한 날짜의 경우)
+                )
                 .fetch();
 
         List<UserOrderSub> userOrderSubList = new ArrayList<>();

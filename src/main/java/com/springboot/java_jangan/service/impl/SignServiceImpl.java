@@ -10,10 +10,8 @@ import com.springboot.java_jangan.data.dto.SignUpResultDto;
 import com.springboot.java_jangan.data.dto.car.CarSearchDto;
 import com.springboot.java_jangan.data.dto.user.UserDto;
 import com.springboot.java_jangan.data.dto.user.UserSearchDto;
-import com.springboot.java_jangan.data.entity.Car;
-import com.springboot.java_jangan.data.entity.Product;
-import com.springboot.java_jangan.data.entity.User;
-import com.springboot.java_jangan.data.entity.UserProduct;
+import com.springboot.java_jangan.data.entity.*;
+import com.springboot.java_jangan.data.repository.History.HistoryRepository;
 import com.springboot.java_jangan.data.repository.User.UserRepository;
 import com.springboot.java_jangan.data.repository.UserProduct.UserProductRepository;
 import com.springboot.java_jangan.data.repository.car.CarRepository;
@@ -40,6 +38,8 @@ public class SignServiceImpl implements SignService {
 
     public UserRepository userRepository;
     public ProductRepository productRepository;
+
+    public HistoryRepository historyRepository;
     public UserProductRepository userProductRepository;
 
     public CarRepository carRepository;
@@ -48,12 +48,14 @@ public class SignServiceImpl implements SignService {
     public PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SignServiceImpl(@Qualifier("userDAOImpl") UserDAO userDAO, UserRepository userRepository, ProductRepository productRepository,  UserProductRepository userProductRepository,CarRepository carRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder){
+    public SignServiceImpl(@Qualifier("userDAOImpl") UserDAO userDAO, UserRepository userRepository, ProductRepository productRepository,  UserProductRepository userProductRepository,CarRepository carRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder, HistoryRepository historyRepository){
         this.userDao = userDAO;
         this.userRepository = userRepository;
         this.userProductRepository = userProductRepository;
 
         this.productRepository = productRepository;
+
+        this.historyRepository = historyRepository;
 
         this.carRepository = carRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -215,7 +217,7 @@ public class SignServiceImpl implements SignService {
                         .id(id)
                         .code(code)
                         .name(name)
-                        .password(password)
+                        .password(passwordEncoder.encode(password))
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
@@ -236,7 +238,7 @@ public class SignServiceImpl implements SignService {
                         .id(id)
                         .code(code)
                         .name(name)
-                        .password(password)
+                        .password(passwordEncoder.encode(password))
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
@@ -349,13 +351,13 @@ public class SignServiceImpl implements SignService {
     }
 
     @Override
-    public SignInResultDto signIn(String id,String password) throws RuntimeException{
+    public SignInResultDto signIn(String id,String password,String clientIp) throws RuntimeException{
         LOGGER.info("[getSignInResult] signDateHandler로 회원 정보 요청");
         User user = userRepository.getById(id);
         LOGGER.info("[getSignInResult] Id : {}",user);
         LOGGER.info("[getByID] id: {}",user);
 
-
+        LOGGER.info("[String clientIp] String clientIp: {}",clientIp);
         LOGGER.info("[getSignInResult] 패스워드 비교 수행 : {}",passwordEncoder.matches(password, user.getPassword()));
 
         if(user == null || !passwordEncoder.matches(password, user.getPassword()))  {
@@ -367,6 +369,20 @@ public class SignServiceImpl implements SignService {
         }else if(user != null && (passwordEncoder.matches(password, user.getPassword()))){
             LOGGER.info("[getSignInResult] 패스워드 일치");
             LOGGER.info("[getSignInResult] SignInResultDto 객체 생성");
+
+
+
+            History history = new History();
+
+            history.setName("로그인");
+            history.setIp(clientIp);
+            history.setUser(user);
+
+            history.setCreated(LocalDateTime.now());
+
+            History insertHistory = historyRepository.save(history);
+
+
             SignInResultDto signInResultDto = SignInResultDto.builder()
                     .token(jwtTokenProvider.createToken(String.valueOf(user.getId()),user.getAuth()))
                     .build();

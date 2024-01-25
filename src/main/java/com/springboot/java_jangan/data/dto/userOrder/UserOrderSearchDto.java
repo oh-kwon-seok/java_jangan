@@ -18,4 +18,5 @@ public class UserOrderSearchDto {
     private String search_text;
     private String filter_title;
     private LocalDateTime end_date;
+    private String user_id;
 }

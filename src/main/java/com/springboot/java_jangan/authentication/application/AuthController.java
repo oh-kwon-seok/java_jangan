@@ -69,14 +69,13 @@ public class AuthController {
         RedirectView redirectView = new RedirectView();
 
         if (userLoggedIn) {
-
-
-            redirectView.setUrl("http://localhost:3000/home");
-
+            String url = "https://jangan.godsun.co.kr/home";
+            redirectView.setUrl(url);
             // 리다이렉션 수행
             return (RedirectView) redirectView;
         } else {
-            redirectView.setUrl("http://localhost:3000/error");
+            String url = "https://jangan.godsun.co.kr/error";
+            redirectView.setUrl(url);
 
             // 로그인이 안 된 경우에는 다른 응답 반환
             return (RedirectView) redirectView;
@@ -91,15 +90,5 @@ public class AuthController {
         return true;
     }
 
-
-
-
-
-
-//    @PostMapping(value="/naver", consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<AuthTokens> loginNaver(@RequestBody NaverLoginParams params) throws Exception{
-//        LOGGER.info("네이버로그인시도중 : {}",params);
-//        return ResponseEntity.ok(oAuthLoginService.login(params));
-//    }
 
 }

@@ -3,8 +3,6 @@ package com.springboot.java_jangan.data.dao.impl;
 import ch.qos.logback.classic.Logger;
 import com.springboot.java_jangan.common.CommonResponse;
 import com.springboot.java_jangan.data.dao.UserOrderDAO;
-import com.springboot.java_jangan.data.dto.SignInResultDto;
-import com.springboot.java_jangan.data.dto.SignUpResultDto;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderDto;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderResultDto;
 import com.springboot.java_jangan.data.dto.userOrder.UserOrderSearchDto;
@@ -65,6 +63,12 @@ public class UserOrderDAOImpl implements UserOrderDAO {
         userOrder.setOrder_status(String.valueOf(userOrderDto.getOrder_status()));
         userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
         userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
+        userOrder.setReq_date(String.valueOf(userOrderDto.getReq_date()));
+        userOrder.setReq_des(String.valueOf(userOrderDto.getReq_des()));
+
+
+
+        userOrder.setImage_url(String.valueOf(userOrderDto.getImage_url()));
 
         userOrder.setUser(user);
         userOrder.setCar(car);
@@ -82,25 +86,45 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
         LOGGER.info("[UserOrder] : {}",selectedUserOrder);
         UserOrderResultDto UserOrderResultDto = new UserOrderResultDto();
-
+        LOGGER.info("[userOrderSubList] : {}",userOrderSubList);
         if (userOrderSubList != null) {
 
             for (Map<String, Object> userOrderSubData : userOrderSubList) {
                 UserOrderSub userOrderSub = new UserOrderSub();
                 userOrderSub.setUserOrder(selectedUserOrder);
 
-                userOrderSub.setQty(Integer.parseInt(userOrderSubData.get("qty").toString()));
+                LOGGER.info("[TESTPRICE] : {}",userOrderSubData.get("price").toString());
 
-                userOrderSub.setPrice(Integer.parseInt(userOrderSubData.get("price").toString()));
+                if (!userOrderSubData.get("qty").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setQty(Integer.parseInt(userOrderSubData.get("qty").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setQty(0);
+                    }
+                }
+                if (!userOrderSubData.get("price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setPrice(Integer.parseInt(userOrderSubData.get("price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setPrice(0);
+                    }
+                }
+                if (!userOrderSubData.get("buy_price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setBuy_price(Integer.parseInt(userOrderSubData.get("buy_price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setBuy_price(0);
+                    }
+                }
+                if (!userOrderSubData.get("supply_price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setSupply_price(Integer.parseInt(userOrderSubData.get("supply_price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setSupply_price(0);
+                    }
+                }
 
 
-
-
-                userOrderSub.setBuy_price(Integer.parseInt(userOrderSubData.get("buy_price").toString()));
-
-
-
-                userOrderSub.setSupply_price(Integer.parseInt(userOrderSubData.get("supply_price").toString()));
 
 
                 // product_uid 값이 있다면 product를 가져와서 userProduct에 설정
@@ -150,6 +174,10 @@ public class UserOrderDAOImpl implements UserOrderDAO {
             userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
 
             userOrder.setShip_image_url(String.valueOf(userOrderDto.getShip_image_url()));
+
+            userOrder.setReq_date(String.valueOf(userOrderDto.getReq_date()));
+            userOrder.setReq_des(String.valueOf(userOrderDto.getReq_des()));
+
 
             userOrder.setUser(user);
             userOrder.setCar(car);
@@ -218,6 +246,12 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
     }
 
+
+    @Override
+    public List<UserOrder> selectMobileTempTotalUserOrder(UserOrderSearchDto userOrderSearchDto) {
+        return userOrderRepository.findAllByMobileTemp(userOrderSearchDto);
+
+    }
 
     @Override
     public String deleteUserOrder(List<Long> uids) throws Exception {

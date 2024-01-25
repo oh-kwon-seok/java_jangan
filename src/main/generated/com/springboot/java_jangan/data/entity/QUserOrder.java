@@ -40,6 +40,10 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public final StringPath price_status = createString("price_status");
 
+    public final StringPath req_date = createString("req_date");
+
+    public final StringPath req_des = createString("req_des");
+
     public final StringPath ship_image_url = createString("ship_image_url");
 
     public final NumberPath<java.math.BigDecimal> totalBuyPrice = createNumber("totalBuyPrice", java.math.BigDecimal.class);

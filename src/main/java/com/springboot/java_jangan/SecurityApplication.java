@@ -24,7 +24,8 @@ public class SecurityApplication {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000","http://localhost:3001","https://nid.naver.com")
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000","http://localhost:3001","https://nid.naver.com","https://jangan.godsun.co.kr","https://admin.godsun.co.kr","http://jangan.godsun.co.kr:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
                         .allowCredentials(true)

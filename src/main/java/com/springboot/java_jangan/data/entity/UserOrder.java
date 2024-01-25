@@ -3,9 +3,14 @@ package com.springboot.java_jangan.data.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -31,6 +36,7 @@ public class UserOrder extends BaseEntity{
     @JoinColumn(name="car_uid")
     private Car car;
 
+
     @Column(nullable = false)
     private String order_status;
 
@@ -40,10 +46,20 @@ public class UserOrder extends BaseEntity{
     @Column
     private String description;
 
+
+
+
     @Column
     private String image_url;
     @Column
     private String ship_image_url;
+
+    @Column
+    private String req_date;
+
+    @Column
+    private String req_des;
+
 
     @Column(nullable = false)
     private Integer used;

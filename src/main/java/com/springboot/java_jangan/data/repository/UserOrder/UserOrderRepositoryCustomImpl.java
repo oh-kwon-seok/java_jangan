@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -78,7 +80,6 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
         QCar car = QCar.car;
 
 
-
         String filter_title = userOrderSearchDto.getFilter_title();
         String search_text = userOrderSearchDto.getSearch_text();
 
@@ -130,16 +131,13 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
         // used 필드가 1인 항목만 검색 조건 추가
         Predicate used = userOrder.used.eq(1);
 
+
+
         Predicate predicate = builder.getValue();
-
-
-
-
 
         List<Tuple> results = from(userOrder)
                 .leftJoin(userOrder.car, car).fetchJoin()
                 .leftJoin(userOrder.user, user).fetchJoin()
-
 
                 .select(userOrder,user,car)
                 .where(predicate,used,dateRange)
@@ -151,6 +149,95 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         for (Tuple result : results) {
             UserOrder userOrderEntity = result.get(userOrder);
+
+
+            userOrderList.add(userOrderEntity);
+        }
+        return userOrderList;
+
+    }
+
+    @Override
+    public List<UserOrder> findAllByMobileTemp(UserOrderSearchDto userOrderSearchDto){
+        QUserOrder userOrder = QUserOrder.userOrder;
+
+        QUser user = QUser.user;
+        QCar car = QCar.car;
+
+
+        String filter_title = userOrderSearchDto.getFilter_title();
+        String search_text = userOrderSearchDto.getSearch_text();
+
+        LocalDateTime start_date = userOrderSearchDto.getStart_date();
+        LocalDateTime end_date = userOrderSearchDto.getEnd_date();
+        String user_id = userOrderSearchDto.getUser_id();
+
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+
+        if("all".equals(filter_title)){
+            if (userOrder.user != null) {
+                builder.or(user.code.like("%" + search_text + "%"));
+                builder.or(user.customer_name.like("%" + search_text + "%"));
+
+            }
+            if (userOrder.order_status != null) {
+                builder.or(userOrder.order_status.like("%" + search_text + "%"));
+            }
+            if (userOrder.price_status != null) {
+                builder.or(userOrder.price_status.like("%" + search_text + "%"));
+            }
+
+            if (userOrder.car != null) {
+                builder.or(car.name.like("%" + search_text + "%"));
+            }
+
+
+        }else {
+            if("code".equals(filter_title)){
+                builder.and(user.code.like("%" + search_text + "%"));
+            }
+            else if("customer_name".equals(filter_title)){
+                builder.and(user.customer_name.like("%" + search_text + "%"));
+            }
+
+            else if("order_status".equals(filter_title)){
+                builder.and(userOrder.order_status.like("%" + search_text + "%"));
+            }
+            else if("price_status".equals(filter_title)){
+                builder.and(userOrder.price_status.like("%" + search_text + "%"));
+            }
+            else if("car".equals(filter_title)){
+                builder.and(car.name.like("%" + search_text + "%"));
+            }
+
+        }
+        Predicate dateRange = userOrder.created.between(start_date, end_date);
+        // used 필드가 1인 항목만 검색 조건 추가
+        Predicate userId = userOrder.user.id.eq(user_id);
+        Predicate used = userOrder.used.eq(1);
+
+        Predicate orderStatus = userOrder.order_status.eq("장바구니");
+
+        Predicate predicate = builder.getValue();
+
+        List<Tuple> results = from(userOrder)
+                .leftJoin(userOrder.car, car).fetchJoin()
+                .leftJoin(userOrder.user, user).fetchJoin()
+
+                .select(userOrder,user,car)
+                .where(predicate,used,dateRange,userId,orderStatus)
+                .orderBy(userOrder.created.desc()) // Order by created field in descending order
+                .fetch();
+
+
+        List<UserOrder> userOrderList = new ArrayList<>();
+
+        for (Tuple result : results) {
+            UserOrder userOrderEntity = result.get(userOrder);
+
+
             userOrderList.add(userOrderEntity);
         }
         return userOrderList;

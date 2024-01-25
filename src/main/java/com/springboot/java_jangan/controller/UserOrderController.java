@@ -59,6 +59,20 @@ public class UserOrderController {
 
     }
 
+    @GetMapping(value= "/mobile_temp_select")
+    public ResponseEntity<List<UserOrder>> getMobileTempTotalUserOrder(@ModelAttribute UserOrderSearchDto userOrderSearchDto) throws RuntimeException{
+
+        long currentTime = System.currentTimeMillis();
+
+        List<UserOrder> selectedMobileTempTotalUserOrder = userOrderService.getMobileTempTotalUserOrder(userOrderSearchDto);
+
+        LOGGER.info("[getTotalUserOrder] response Time: {}ms,{}", System.currentTimeMillis() - currentTime);
+
+        return ResponseEntity.status(HttpStatus.OK).body(selectedMobileTempTotalUserOrder);
+
+    }
+
+
     @PostMapping(value= "/save", consumes = "application/json", produces = "application/json")
     public UserOrderResultDto createUserOrder(@RequestBody UserOrderDto userOrderDto) throws Exception{
         long currentTime = System.currentTimeMillis();

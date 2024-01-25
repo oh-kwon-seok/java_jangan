@@ -35,6 +35,11 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
+    public List<UserOrder> getMobileTempTotalUserOrder(UserOrderSearchDto userOrderSearchDto){
+        return userOrderDAO.selectMobileTempTotalUserOrder(userOrderSearchDto);
+    }
+
+    @Override
     public UserOrderResultDto saveUserOrder(UserOrderDto userOrderDto) throws Exception {
 
         return userOrderDAO.insertUserOrder(userOrderDto);
