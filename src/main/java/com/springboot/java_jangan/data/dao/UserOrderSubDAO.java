@@ -24,6 +24,8 @@ public interface UserOrderSubDAO {
 
     List<UserOrderSub> selectUserOrderSub(UserOrderSubSearchDto userOrderSubSearchDto);
 
+    List<UserOrderSub> selectUserOrderSubPrice(UserOrderSubSearchDto userOrderSubSearchDto);
+
 
 
 }

@@ -33,7 +33,6 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
         QProduct product = QProduct.product;
         QUserOrder userOrder = QUserOrder.userOrder;
 
-
         QUserOrderSub userOrderSub = QUserOrderSub.userOrderSub;
 
 
@@ -51,7 +50,10 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
             }
             if (userOrder.car != null) {
                 builder.or(userOrder.car.name.like("%" + search_text + "%"));
@@ -68,7 +70,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
             }
             else if("car".equals(filter_title)){
                 builder.and(userOrder.car.name.like("%" + search_text + "%"));
@@ -111,6 +113,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
         QUserOrder userOrder = QUserOrder.userOrder;
 
 
+
         QUserOrderSub userOrderSub = QUserOrderSub.userOrderSub;
 
 
@@ -128,7 +131,11 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
+
             }
             if (userOrder.car != null) {
                 builder.or(userOrder.car.name.like("%" + search_text + "%"));
@@ -145,7 +152,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
             }
             else if("car".equals(filter_title)){
                 builder.and(userOrder.car.name.like("%" + search_text + "%"));
@@ -220,7 +227,10 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+                builder.or(product.type.name.like("%" + search_text + "%"));
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
             }
             if (userOrder.car != null) {
                 builder.or(userOrder.car.name.like("%" + search_text + "%"));
@@ -237,7 +247,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
 
             }
             else if("car".equals(filter_title)){
@@ -265,7 +275,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 .where(predicate,dateRange,userId,orderStatus)
                 .orderBy(
                         userOrderSub.created.desc(),  // 날짜 기준으로 내림차순 정렬
-                        product.type.desc(),           // 타입 기준으로 내림차순 정렬
+                        product.type.name.desc(),           // 타입 기준으로 내림차순 정렬
                         userOrderSub.created.asc()     // 추가적으로 날짜를 오름차순으로 정렬 (동일한 날짜의 경우)
                 )
                 .fetch();
@@ -309,8 +319,12 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
             }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
+            }
+
             if (userOrder.car != null) {
                 builder.or(userOrder.car.name.like("%" + search_text + "%"));
             }
@@ -326,7 +340,7 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
 
             }
             else if("car".equals(filter_title)){
@@ -393,6 +407,33 @@ public class UserOrderSubRepositoryCustomImpl extends QuerydslRepositorySupport 
 
     }
 
+    @Override
+    public List<UserOrderSub> findSupplyPrice(UserOrderSubSearchDto UserOrderSubSearchDto){
 
+        QUserOrder userOrder = QUserOrder.userOrder;
+
+        QUserOrderSub userOrderSub = QUserOrderSub.userOrderSub;
+
+        String req_date = UserOrderSubSearchDto.getReq_date();
+        String user_id = UserOrderSubSearchDto.getUser_id();
+
+        Predicate search_user_id = userOrder.user.id.eq(user_id);
+
+
+        Predicate dateRange = userOrder.req_date.loe(req_date);
+
+        List<Tuple> results = from(userOrderSub)
+                .leftJoin(userOrderSub.userOrder, userOrder).fetchJoin()
+                .select(userOrderSub,userOrder)
+                .where(search_user_id,dateRange)
+                .fetch();
+        List<UserOrderSub> userOrderSubList = new ArrayList<>();
+        for (Tuple result : results) {
+            UserOrderSub userOrderSubEntity = result.get(userOrderSub);
+            userOrderSubList.add(userOrderSubEntity);
+        }
+        return userOrderSubList;
+
+    }
 
 }

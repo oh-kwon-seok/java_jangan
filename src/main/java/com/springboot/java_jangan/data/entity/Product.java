@@ -23,8 +23,9 @@ public class Product extends BaseEntity{
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String type;
+    @ManyToOne
+    @JoinColumn(name="type_uid")
+    private Type type;
     @ManyToOne
     @JoinColumn(name="company_uid")
     private Company company;

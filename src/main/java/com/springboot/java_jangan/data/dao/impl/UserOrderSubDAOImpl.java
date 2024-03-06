@@ -45,4 +45,9 @@ public class UserOrderSubDAOImpl implements UserOrderSubDAO {
         return userOrderSubRepository.findInfo(userOrderSubSearchDto);
 
     }
+    @Override
+    public List<UserOrderSub> selectUserOrderSubPrice(UserOrderSubSearchDto userOrderSubSearchDto) {
+        return userOrderSubRepository.findSupplyPrice(userOrderSubSearchDto);
+
+    }
 }

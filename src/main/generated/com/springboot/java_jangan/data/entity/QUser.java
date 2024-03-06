@@ -44,6 +44,10 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath phone = createString("phone");
 
+    public final StringPath staff_name = createString("staff_name");
+
+    public final StringPath staff_phone = createString("staff_phone");
+
     public final DateTimePath<java.time.LocalDateTime> updated = createDateTime("updated", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> used = createNumber("used", Integer.class);

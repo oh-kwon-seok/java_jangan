@@ -12,6 +12,8 @@ import lombok.*;
 public class ProductDto {
     private Long uid;
 
+    private Long type_uid;
+
     private Long company_uid;
 
     private String name;
@@ -20,13 +22,13 @@ public class ProductDto {
     private Long used;
     private String token;
 
-    public ProductDto(Long uid,Long company_uid, String name,String type, Long used,String token){
+    public ProductDto(Long uid,Long type_uid, Long company_uid, String name, Long used,String token){
         this.uid = uid;
+        this.type_uid = type_uid;
         this.company_uid = company_uid;
 
-        this.name = name;
-        this.type = type;
 
+        this.name = name;
         this.used = used;
 
         this.token = token;

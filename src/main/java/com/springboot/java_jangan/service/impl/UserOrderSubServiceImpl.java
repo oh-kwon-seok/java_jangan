@@ -44,5 +44,10 @@ public class UserOrderSubServiceImpl implements UserOrderSubService {
         return userOrderSubDAO.selectUserOrderSub(userOrderSubSearchDto);
     }
 
+    @Override
+    public List<UserOrderSub> getUserOrderSubPrice(UserOrderSubSearchDto userOrderSubSearchDto){
+        return userOrderSubDAO.selectUserOrderSubPrice(userOrderSubSearchDto);
+    }
+
 
 }

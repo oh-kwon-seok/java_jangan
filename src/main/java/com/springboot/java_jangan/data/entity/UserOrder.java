@@ -2,6 +2,7 @@ package com.springboot.java_jangan.data.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.*;
 
 import net.minidev.json.annotate.JsonIgnore;
@@ -55,6 +56,9 @@ public class UserOrder extends BaseEntity{
     private String ship_image_url;
 
     @Column
+    private String amount_array;
+
+    @Column
     private String req_date;
 
     @Column
@@ -71,12 +75,19 @@ public class UserOrder extends BaseEntity{
     private BigDecimal totalSupplyPrice;
 
 
+
+    @Formula("(SELECT COALESCE(SUM(uoa.amount), 0) FROM user_order_amount uoa WHERE uoa.user_id = user_id)")
+    private BigDecimal totalAmount;
+
+
+
+
+
+
     @Formula("(SELECT COALESCE(SUM(uos.supply_price), 0) " +
             "FROM user_order_sub uos " +
             "WHERE uos.user_order_uid IN " +
-            "  (SELECT uo.uid FROM user_order uo WHERE uo.user_id = user_id AND uo.price_status = '미수금'))")
+            "  (SELECT uo.uid FROM user_order uo WHERE uo.user_id = user_id))")
     private BigDecimal totalUnpaidPrice;
-
-
 
 }

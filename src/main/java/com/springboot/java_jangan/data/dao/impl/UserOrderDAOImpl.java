@@ -9,6 +9,7 @@ import com.springboot.java_jangan.data.dto.userOrder.UserOrderSearchDto;
 import com.springboot.java_jangan.data.entity.*;
 import com.springboot.java_jangan.data.repository.User.UserRepository;
 import com.springboot.java_jangan.data.repository.UserOrder.UserOrderRepository;
+import com.springboot.java_jangan.data.repository.UserOrderAmount.UserOrderAmountRepository;
 import com.springboot.java_jangan.data.repository.UserOrderSub.UserOrderSubRepository;
 import com.springboot.java_jangan.data.repository.car.CarRepository;
 
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ public class UserOrderDAOImpl implements UserOrderDAO {
     private final UserOrderRepository userOrderRepository;
     private final UserOrderSubRepository userOrderSubRepository;
 
+    private final UserOrderAmountRepository userOrderAmountRepository;
+
     private final UserRepository userRepository;
 
 
@@ -39,11 +43,15 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
     @Autowired
     public UserOrderDAOImpl(UserOrderRepository userOrderRepository,
-                            UserOrderSubRepository userOrderSubRepository, UserRepository userRepository,
+                            UserOrderSubRepository userOrderSubRepository,
+                            UserOrderAmountRepository userOrderAmountRepository,
+                            UserRepository userRepository,
                             CarRepository carRepository,
                             ProductRepository productRepository) {
         this.userOrderRepository = userOrderRepository;
         this.userOrderSubRepository = userOrderSubRepository;
+        this.userOrderAmountRepository = userOrderAmountRepository;
+
         this.userRepository = userRepository;
         this.carRepository = carRepository;
         this.productRepository = productRepository;
@@ -61,6 +69,9 @@ public class UserOrderDAOImpl implements UserOrderDAO {
         UserOrder userOrder = new UserOrder();
 
         userOrder.setOrder_status(String.valueOf(userOrderDto.getOrder_status()));
+
+
+
         userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
         userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
         userOrder.setReq_date(String.valueOf(userOrderDto.getReq_date()));
@@ -74,19 +85,47 @@ public class UserOrderDAOImpl implements UserOrderDAO {
         userOrder.setCar(car);
         userOrder.setUsed(Math.toIntExact(userOrderDto.getUsed()));
         userOrder.setCreated(LocalDateTime.now());
+        userOrder.setAmount_array(String.valueOf(userOrderDto.getAmount_array()));
 
         UserOrder insertUserOrder = userOrderRepository.save(userOrder);
 
         Long uid = insertUserOrder.getUid();
 
-        LOGGER.info("[uid] : {}",uid);
         UserOrder selectedUserOrder = userOrderRepository.findByUid(uid);
 
         List<Map<String, Object>> userOrderSubList = userOrderDto.getUser_order_sub();
+        List<Map<String, Object>> userOrderAmountList = userOrderDto.getUser_order_amount();
 
-        LOGGER.info("[UserOrder] : {}",selectedUserOrder);
+
         UserOrderResultDto UserOrderResultDto = new UserOrderResultDto();
-        LOGGER.info("[userOrderSubList] : {}",userOrderSubList);
+
+
+        if (userOrderAmountList != null) {
+
+            for (Map<String, Object> userOrderAmountData : userOrderAmountList) {
+                UserOrderAmount userOrderAmount = new UserOrderAmount();
+                userOrderAmount.setUserOrder(selectedUserOrder);
+                userOrderAmount.setUser(user);
+
+                userOrderAmount.setAmount_date((String) userOrderAmountData.get("amount_date"));
+
+                if (!userOrderAmountData.get("amount").toString().isEmpty()) {
+                    try {
+                        userOrderAmount.setAmount(Integer.parseInt(userOrderAmountData.get("amount").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderAmount.setAmount(0);
+                    }
+                }
+
+                userOrderAmount.setCreated(LocalDateTime.now());
+                userOrderAmount.setUpdated(LocalDateTime.now());
+
+                userOrderAmountRepository.save(userOrderAmount);
+            }
+
+        }
+
+
         if (userOrderSubList != null) {
 
             for (Map<String, Object> userOrderSubData : userOrderSubList) {
@@ -150,6 +189,8 @@ public class UserOrderDAOImpl implements UserOrderDAO {
             return UserOrderResultDto;
 
         }
+
+
     }
 
 
@@ -173,6 +214,12 @@ public class UserOrderDAOImpl implements UserOrderDAO {
             userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
             userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
 
+
+
+            userOrder.setAmount_array(String.valueOf(userOrderDto.getAmount_array()));
+
+
+
             userOrder.setShip_image_url(String.valueOf(userOrderDto.getShip_image_url()));
 
             userOrder.setReq_date(String.valueOf(userOrderDto.getReq_date()));
@@ -190,9 +237,38 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
 
         List<Map<String, Object>> userOrderSubList = userOrderDto.getUser_order_sub();
+        List<Map<String, Object>> userOrderAmountList = userOrderDto.getUser_order_amount();
+
 
         LOGGER.info("[UserOrder] : {}",selectedUserOrder);
         UserOrderResultDto UserOrderResultDto = new UserOrderResultDto();
+
+        if (userOrderAmountList != null) {
+            List<UserOrderAmount> deletedData = userOrderAmountRepository.findByUserOrderUid(userOrderDto.getUid());
+            userOrderAmountRepository.deleteAll(deletedData);
+
+
+            for (Map<String, Object> userOrderAmountData : userOrderAmountList) {
+                UserOrderAmount userOrderAmount = new UserOrderAmount();
+                userOrderAmount.setUserOrder(updatedUserOrder);
+                userOrderAmount.setAmount_date((String) userOrderAmountData.get("amount_date"));
+                userOrderAmount.setUser(user);
+
+                if (!userOrderAmountData.get("amount").toString().isEmpty()) {
+                    try {
+                        userOrderAmount.setAmount(Integer.parseInt(userOrderAmountData.get("amount").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderAmount.setAmount(0);
+                    }
+                }
+
+                userOrderAmount.setCreated(LocalDateTime.now());
+                userOrderAmount.setUpdated(LocalDateTime.now());
+
+                userOrderAmountRepository.save(userOrderAmount);
+            }
+
+        }
 
         if (userOrderSubList != null) {
 

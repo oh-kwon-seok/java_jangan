@@ -53,7 +53,10 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
             }
             if (userTempOrder.car != null) {
                 builder.or(userTempOrder.car.name.like("%" + search_text + "%"));
@@ -70,7 +73,7 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
             }
             else if("car".equals(filter_title)){
                 builder.and(userTempOrder.car.name.like("%" + search_text + "%"));
@@ -133,7 +136,11 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
+
             }
             if (userTempOrder.car != null) {
                 builder.or(userTempOrder.car.name.like("%" + search_text + "%"));
@@ -150,7 +157,7 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
 
             }
             else if("car".equals(filter_title)){
@@ -216,7 +223,10 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
             }
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
-                builder.or(product.type.like("%" + search_text + "%"));
+
+            }
+            if (product.type != null) {
+                builder.or(product.type.name.like("%" + search_text + "%"));
             }
             if (userTempOrder.car != null) {
                 builder.or(userTempOrder.car.name.like("%" + search_text + "%"));
@@ -233,7 +243,7 @@ public class UserTempOrderSubRepositoryCustomImpl extends QuerydslRepositorySupp
                 builder.and(product.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(product.type.name.like("%" + search_text + "%"));
 
             }
             else if("car".equals(filter_title)){

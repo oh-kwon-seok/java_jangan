@@ -59,7 +59,17 @@ public class UserRepositoryCustomImpl extends QuerydslRepositorySupport implemen
             }
             if (user.phone != null) {
                 builder.or(user.phone.like("%" + search_text + "%"));
-            }if (user.email != null) {
+            }if (user.staff_name != null) {
+                builder.or(user.staff_name.like("%" + search_text + "%"));
+            }if (user.staff_phone != null) {
+                builder.or(user.staff_phone.like("%" + search_text + "%"));
+            }
+
+
+            if (user.phone != null) {
+                builder.or(user.phone.like("%" + search_text + "%"));
+            }
+            if (user.email != null) {
                 builder.or(user.email.like("%" + search_text + "%"));
             }
             if (user.car != null) {
@@ -82,6 +92,12 @@ public class UserRepositoryCustomImpl extends QuerydslRepositorySupport implemen
             }
             else if("phone".equals(filter_title)){
                 builder.and(user.phone.like("%" + search_text + "%"));
+            }
+            else if("staff_name".equals(filter_title)){
+                builder.and(user.staff_name.like("%" + search_text + "%"));
+            }
+            else if("staff_phone".equals(filter_title)){
+                builder.and(user.staff_phone.like("%" + search_text + "%"));
             }
             else if("email".equals(filter_title)){
                 builder.and(user.email.like("%" + search_text + "%"));

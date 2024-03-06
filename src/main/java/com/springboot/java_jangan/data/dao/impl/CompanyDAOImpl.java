@@ -4,7 +4,10 @@ import com.springboot.java_jangan.data.dao.CompanyDAO;
 import com.springboot.java_jangan.data.dto.company.CompanyDto;
 import com.springboot.java_jangan.data.dto.company.CompanySearchDto;
 import com.springboot.java_jangan.data.entity.Company;
+import com.springboot.java_jangan.data.entity.Type;
+import com.springboot.java_jangan.data.entity.User;
 import com.springboot.java_jangan.data.repository.company.CompanyRepository;
+import com.springboot.java_jangan.data.repository.type.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +19,13 @@ import java.util.Optional;
 public class CompanyDAOImpl implements CompanyDAO {
     
     private final CompanyRepository companyRepository;
+    private final TypeRepository typeRepository;
+
     @Autowired
-    public CompanyDAOImpl(CompanyRepository companyRepository){
+    public CompanyDAOImpl(CompanyRepository companyRepository,TypeRepository typeRepository){
         this.companyRepository = companyRepository;
+        this.typeRepository = typeRepository;
+
 
     }
 
@@ -27,11 +34,14 @@ public class CompanyDAOImpl implements CompanyDAO {
 
 
         Company company = new Company();
-        company.setCode(companyDto.getCode());
+        Type type = typeRepository.findByUid(companyDto.getType_uid());
 
+        company.setCode(companyDto.getCode());
         company.setName(companyDto.getName());
         company.setEmail(companyDto.getEmail());
         company.setPhone(companyDto.getPhone());
+        company.setType(type);
+
 
         company.setUsed(Math.toIntExact(companyDto.getUsed()));
 

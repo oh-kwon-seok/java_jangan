@@ -42,8 +42,8 @@ public class SensorRepositoryCustomImpl extends QuerydslRepositorySupport implem
                 .select(sensor)
                 .where(dateRange,type)
                 .groupBy(sensor.created.year(), sensor.created.month(), sensor.created.dayOfMonth(), sensor.created.hour())  // 날짜별, 시간별로 그룹화
-                .orderBy(sensor.created.asc())
-                .limit(30)
+                .orderBy(sensor.created.desc())
+                .limit(5)
                 .fetch();
 
         return sensorList;
@@ -71,8 +71,8 @@ public class SensorRepositoryCustomImpl extends QuerydslRepositorySupport implem
                 .select(sensor)
                 .where(dateRange,type)
                 .groupBy(sensor.created.year(), sensor.created.month(), sensor.created.dayOfMonth(), sensor.created.hour())  // 날짜별, 시간별로 그룹화
-                .orderBy(sensor.created.asc())
-                .limit(30)
+                .orderBy(sensor.created.desc())
+                .limit(5)
                 .fetch();
 
         return sensorList;

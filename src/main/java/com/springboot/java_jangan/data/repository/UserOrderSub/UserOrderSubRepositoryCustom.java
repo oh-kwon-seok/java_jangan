@@ -21,4 +21,6 @@ public interface UserOrderSubRepositoryCustom {
 
     List<UserOrderSub> findInfo(UserOrderSubSearchDto userOrderSubSearchDto);
 
+    List<UserOrderSub> findSupplyPrice(UserOrderSubSearchDto userOrderSubSearchDto);
+
 }

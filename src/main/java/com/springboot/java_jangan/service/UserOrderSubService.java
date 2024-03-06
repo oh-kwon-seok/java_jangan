@@ -24,6 +24,9 @@ public interface UserOrderSubService {
 
     List<UserOrderSub> getUserOrderSub(UserOrderSubSearchDto userOrderSubSearchDto);
 
+    List<UserOrderSub> getUserOrderSubPrice(UserOrderSubSearchDto userOrderSubSearchDto);
+
+
 
 
 }

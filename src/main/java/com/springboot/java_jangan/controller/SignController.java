@@ -106,6 +106,20 @@ public class SignController {
         }
         return signInResultDto;
     }
+    @PostMapping(value= "/mobile-signin", consumes = "application/json", produces = "application/json")
+    public SignInResultDto mobileSignIn(
+            @RequestBody User user, HttpServletRequest request
+    ) throws RuntimeException {
+
+        LOGGER.info("[signIn] 모바일로그인을 시도하고 있습니다.id: {}, pw: ****", user.getId());
+        LOGGER.info("[IP정보] 모바일로그인을 시도하고 있습니다.IP: {}", request.getRemoteAddr());
+
+        SignInResultDto signInResultDto = signService.mobileSignIn(user.getId(), user.getPassword(),request.getRemoteAddr());
+        if(signInResultDto.getCode() == 0){
+            LOGGER.info("[signIn] 정상적으로 로그인되었습니다.id: {}, token : {}",user.getId(), signInResultDto.getToken());
+        }
+        return signInResultDto;
+    }
 
 
 

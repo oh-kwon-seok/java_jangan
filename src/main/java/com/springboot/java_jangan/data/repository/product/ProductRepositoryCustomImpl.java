@@ -28,6 +28,8 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
     public List<Product> findAll(ProductSearchDto productSearchDto){
         QProduct product = QProduct.product;
         QCompany company = QCompany.company;
+        QType type = QType.type;
+
         String filter_title = productSearchDto.getFilter_title();
         String search_text = productSearchDto.getSearch_text();
 
@@ -42,8 +44,8 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
             if (product.name != null) {
                 builder.or(product.name.like("%" + search_text + "%"));
             }
-            if (product.type != null) {
-                builder.or(product.type.like("%" + search_text + "%"));
+            if (type.name != null) {
+                builder.or(type.name.like("%" + search_text + "%"));
             }
 
             if (product.company != null) {
@@ -57,7 +59,7 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 builder.and(company.name.like("%" + search_text + "%"));
             }
             else if("type".equals(filter_title)){
-                builder.and(product.type.like("%" + search_text + "%"));
+                builder.and(type.name.like("%" + search_text + "%"));
             }
 
 
@@ -70,7 +72,10 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         List<Tuple> results = from(product)
                 .leftJoin(product.company, company).fetchJoin()
-                .select(product,company)
+
+                .leftJoin(product.type, type).fetchJoin()
+
+                .select(product,company,type)
                 .where(predicate,dateRange,used)
                 .orderBy(product.created.desc()) // Order by created field in descending order
                 .fetch();

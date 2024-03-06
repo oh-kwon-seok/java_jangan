@@ -24,6 +24,8 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final StringPath amount_array = createString("amount_array");
+
     public final QCar car;
 
     //inherited
@@ -45,6 +47,8 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
     public final StringPath req_des = createString("req_des");
 
     public final StringPath ship_image_url = createString("ship_image_url");
+
+    public final NumberPath<java.math.BigDecimal> totalAmount = createNumber("totalAmount", java.math.BigDecimal.class);
 
     public final NumberPath<java.math.BigDecimal> totalBuyPrice = createNumber("totalBuyPrice", java.math.BigDecimal.class);
 

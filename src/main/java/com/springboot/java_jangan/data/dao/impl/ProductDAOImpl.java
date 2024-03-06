@@ -9,6 +9,7 @@ import com.springboot.java_jangan.data.entity.*;
 import com.springboot.java_jangan.data.repository.company.CompanyRepository;
 import com.springboot.java_jangan.data.repository.product.ProductRepository;
 
+import com.springboot.java_jangan.data.repository.type.TypeRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,28 +27,32 @@ public class ProductDAOImpl implements ProductDAO {
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
 
+    private final TypeRepository typeRepository;
+
 
 
 
     @Autowired
     public ProductDAOImpl(ProductRepository productRepository,
 
-                          CompanyRepository companyRepository) {
+                          CompanyRepository companyRepository,
+                          TypeRepository typeRepository
+                          ) {
         this.productRepository = productRepository;
-
         this.companyRepository = companyRepository;
+        this.typeRepository = typeRepository;
+
     }
 
     @Override
     public Product insertProduct(ProductDto productDto) throws Exception {
 
         Company company = companyRepository.findByUid(productDto.getCompany_uid());
-
+        Type type = typeRepository.findByUid(productDto.getType_uid());
 
         Product product = new Product();
-
         product.setName(productDto.getName());
-        product.setType(productDto.getType());
+        product.setType(type);
         product.setCompany(company);
         product.setUsed(Math.toIntExact(productDto.getUsed()));
 
@@ -72,6 +77,7 @@ public class ProductDAOImpl implements ProductDAO {
     public Product updateProduct(ProductDto productDto) throws Exception {
 
         Company company = companyRepository.findByUid(productDto.getCompany_uid());
+        Type type = typeRepository.findByUid(productDto.getType_uid());
 
         Optional<Product> selectedProduct = productRepository.findById(productDto.getUid());
 
@@ -80,7 +86,7 @@ public class ProductDAOImpl implements ProductDAO {
         if (selectedProduct.isPresent()) {
             Product product = selectedProduct.get();
             product.setName(productDto.getName());
-            product.setType(productDto.getType());
+            product.setType(type);
             product.setCompany(company);
             product.setUsed(Math.toIntExact(productDto.getUsed()));
 
@@ -114,16 +120,24 @@ public class ProductDAOImpl implements ProductDAO {
 
         for (Map<String, Object> data : requestList) {
             String name = (String) data.get("name");
-            String type = (String) data.get("type");
+            String typeName = (String) data.get("type_name");
+            String companyName = (String) data.get("company_name");
+
+            Type type = typeRepository.findByName(typeName);
+            Company company = companyRepository.findByName(companyName);
+
+
 
             // 예시로 이름과 수량이 모두 일치하는 Product를 찾는 메서드를 가정
-            Optional<Product> selectedProduct = Optional.ofNullable(productRepository.findByNameAndType(name, type));
+            Optional<Product> selectedProduct = Optional.ofNullable(productRepository.findByNameAndType_nameAndCompany_name(name,typeName,companyName));
 
             if (selectedProduct.isPresent()) {
                 Product product = selectedProduct.get();
 
                 product.setName(name);
                 product.setType(type);
+                product.setCompany(company);
+
                 product.setUsed(1);
                 product.setUpdated(LocalDateTime.now());
                 productRepository.save(product);
@@ -132,6 +146,7 @@ public class ProductDAOImpl implements ProductDAO {
 
                 product.setName(name);
                 product.setType(type);
+                product.setCompany(company);
 
                 product.setUsed(1);
 

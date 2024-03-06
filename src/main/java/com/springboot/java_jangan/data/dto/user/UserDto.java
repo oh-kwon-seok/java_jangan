@@ -23,6 +23,9 @@ public class UserDto {
     private String email;
     private String phone;
 
+    private String staff_name;
+    private String staff_phone;
+
     private Long car_uid;
 
     private String auth;
@@ -30,7 +33,7 @@ public class UserDto {
     private String token;
     private List<Map<String, Object>> user_product;
 
-    public UserDto( String id,String code,String customer_name,String password,String name,String email,String phone, Long car_uid, String auth, Long used, String token,List<Map<String, Object>> user_product){
+    public UserDto( String id,String code,String customer_name,String password,String name,String email,String phone,String staff_name,String staff_phone, Long car_uid, String auth, Long used, String token,List<Map<String, Object>> user_product){
 
         this.name = name;
         this.id = id;
@@ -40,7 +43,8 @@ public class UserDto {
         this.customer_name = customer_name;
         this.email = email;
         this.phone = phone;
-
+        this.staff_name = staff_name;
+        this.staff_phone = staff_phone;
         this.car_uid = car_uid;
         this.auth = auth;
         this.used = used;

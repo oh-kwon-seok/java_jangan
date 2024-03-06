@@ -34,7 +34,7 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final StringPath name = createString("name");
 
-    public final StringPath type = createString("type");
+    public final QType type;
 
     public final NumberPath<Long> uid = createNumber("uid", Long.class);
 
@@ -61,7 +61,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public QProduct(Class<? extends Product> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.company = inits.isInitialized("company") ? new QCompany(forProperty("company")) : null;
+        this.company = inits.isInitialized("company") ? new QCompany(forProperty("company"), inits.get("company")) : null;
+        this.type = inits.isInitialized("type") ? new QType(forProperty("type")) : null;
     }
 
 }

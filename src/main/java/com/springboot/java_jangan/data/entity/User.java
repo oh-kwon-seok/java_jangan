@@ -45,6 +45,9 @@ public class User implements UserDetails {
     private String email;
     private String phone;
 
+    private String staff_name;
+    private String staff_phone;
+
 
     @ManyToOne
     @JoinColumn(name="car_uid")

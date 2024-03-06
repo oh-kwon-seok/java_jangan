@@ -22,6 +22,7 @@ public interface SignService {
 
     String delete(List<String> id) throws Exception;
     SignInResultDto signIn(String userId, String password,String clientIp) throws RuntimeException;
+    SignInResultDto mobileSignIn(String userId, String password,String clientIp) throws RuntimeException;
 
     SignInResultDto passwordInit(String code, String phone) throws RuntimeException;
 

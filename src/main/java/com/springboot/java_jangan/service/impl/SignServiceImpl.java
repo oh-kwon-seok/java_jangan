@@ -17,6 +17,7 @@ import com.springboot.java_jangan.data.repository.UserProduct.UserProductReposit
 import com.springboot.java_jangan.data.repository.car.CarRepository;
 import com.springboot.java_jangan.data.repository.product.ProductRepository;
 import com.springboot.java_jangan.service.SignService;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -87,13 +88,22 @@ public class SignServiceImpl implements SignService {
 
         String email = userDto.getEmail();
         String phone = userDto.getPhone();
+
+        String staff_name = userDto.getStaff_name();
+
+        String staff_phone = userDto.getStaff_phone();
+
+
         String auth = userDto.getAuth();
 
 
-        Car car = carRepository.findByUid(Long.valueOf(userDto.getCar_uid()));
-        Optional<User> selectedUser = Optional.ofNullable(userRepository.getById(userDto.getId()));
+        Car car = carRepository.findByUid(userDto.getCar_uid());
+//        Optional<User> selectedUser = Optional.ofNullable(userRepository.getById(userDto.getId()));
 
-        LOGGER.info("[selectUser] : {}",selectedUser.isPresent());
+        Optional<User> selectedUser = userRepository.findById(userDto.getId());
+
+
+        LOGGER.info("[selectUser] : {}",selectedUser);
 
         User user;
         SignUpResultDto signUpResultDto = new SignUpResultDto();
@@ -114,6 +124,10 @@ public class SignServiceImpl implements SignService {
                         .password(passwordEncoder.encode(password))
                         .email(email)
                         .phone(phone)
+
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
+
                         .car(car)
                         .auth(Collections.singletonList("ROLE_ADMIN"))
                         .created(LocalDateTime.now())
@@ -133,6 +147,8 @@ public class SignServiceImpl implements SignService {
                         .password(passwordEncoder.encode(password))
                         .email(email)
                         .phone(phone)
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
                         .car(car)
                         .auth(Collections.singletonList("ROLE_USER"))
                         .created(LocalDateTime.now())
@@ -162,10 +178,14 @@ public class SignServiceImpl implements SignService {
 
         String email = userDto.getEmail();
         String phone = userDto.getPhone();
+        String staff_name = userDto.getStaff_name();
+
+        String staff_phone = userDto.getStaff_phone();
+
         String auth = userDto.getAuth();
 
 
-        Car car = carRepository.findByUid(Long.valueOf(userDto.getCar_uid()));
+        Car car = carRepository.findByUid(userDto.getCar_uid());
 
 
         Optional<User> selectedUser = Optional.ofNullable(userRepository.getById(userDto.getId()));
@@ -192,7 +212,15 @@ public class SignServiceImpl implements SignService {
                 UserProduct userProduct = new UserProduct();
                 // userProduct에 필요한 데이터를 userProductData에서 가져와 설정
                 // 예시: userProduct.setName(userProductData.get("name").toString());
-                userProduct.setQty(Integer.parseInt(userProductData.get("qty").toString()));
+
+                if (!userProductData.get("qty").toString().isEmpty()) {
+                    try {
+                        userProduct.setQty(Integer.parseInt(userProductData.get("qty").toString()));
+                    } catch (NumberFormatException e) {
+                        userProduct.setQty(0);
+                    }
+                }
+
                 userProduct.setUser(setId);
 
                 // product_uid 값이 있다면 product를 가져와서 userProduct에 설정
@@ -221,6 +249,9 @@ public class SignServiceImpl implements SignService {
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
+
                         .car(car)
                         .auth(Collections.singletonList("ROLE_ADMIN"))
 
@@ -242,6 +273,8 @@ public class SignServiceImpl implements SignService {
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
                         .car(car)
                         .auth(Collections.singletonList("ROLE_USER"))
                         .updated(LocalDateTime.now())
@@ -283,6 +316,9 @@ public class SignServiceImpl implements SignService {
 
         String email = userDto.getEmail();
         String phone = userDto.getPhone();
+        String staff_name = userDto.getStaff_name();
+
+        String staff_phone = userDto.getStaff_phone();
         String auth = userDto.getAuth();
 
         Optional<User> selectedUser = Optional.ofNullable(userRepository.getById(userDto.getId()));
@@ -303,6 +339,8 @@ public class SignServiceImpl implements SignService {
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
 
                         .auth(Collections.singletonList("ROLE_ADMIN"))
 
@@ -323,6 +361,8 @@ public class SignServiceImpl implements SignService {
                         .customer_name(customer_name)
                         .email(email)
                         .phone(phone)
+                        .staff_name(staff_name)
+                        .staff_phone(staff_phone)
 
                         .auth(Collections.singletonList("ROLE_USER"))
                         .updated(LocalDateTime.now())
@@ -353,47 +393,116 @@ public class SignServiceImpl implements SignService {
     @Override
     public SignInResultDto signIn(String id,String password,String clientIp) throws RuntimeException{
         LOGGER.info("[getSignInResult] signDateHandler로 회원 정보 요청");
-        User user = userRepository.getById(id);
-        LOGGER.info("[getSignInResult] Id : {}",user);
-        LOGGER.info("[getByID] id: {}",user);
+        User user = userRepository.getByIdAndAuth(id,"ROLE_ADMIN");
 
-        LOGGER.info("[String clientIp] String clientIp: {}",clientIp);
-        LOGGER.info("[getSignInResult] 패스워드 비교 수행 : {}",passwordEncoder.matches(password, user.getPassword()));
+        try {
+            LOGGER.info("[getSignInResult] Id : {}",user);
+            LOGGER.info("[getByID] id: {}",user);
 
-        if(user == null || !passwordEncoder.matches(password, user.getPassword()))  {
+            LOGGER.info("[String clientIp] String clientIp: {}",clientIp);
+//            LOGGER.info("[getSignInResult] 패스워드 비교 수행 : {}",passwordEncoder.matches(password, user.getPassword()));
+
+            if(user == null)  {
+                SignInResultDto signInResultDto = new SignInResultDto();
+
+                LOGGER.info("[getSignInResult] null : {}",signInResultDto);
+                setFailResult(signInResultDto);
+                return signInResultDto;
+            }
+            else if(!passwordEncoder.matches(password, user.getPassword()))  {
+                SignInResultDto signInResultDto = new SignInResultDto();
+
+                LOGGER.info("[getSignInResult] in : {}",signInResultDto);
+                setFailResult(signInResultDto);
+                return signInResultDto;
+            }else if(user != null && (passwordEncoder.matches(password, user.getPassword()))){
+                LOGGER.info("[getSignInResult] 패스워드 일치");
+                LOGGER.info("[getSignInResult] SignInResultDto 객체 생성");
+
+                History history = new History();
+
+                history.setName("로그인");
+                history.setIp(clientIp);
+                history.setUser(user);
+                history.setCreated(LocalDateTime.now());
+                History insertHistory = historyRepository.save(history);
+
+                SignInResultDto signInResultDto = SignInResultDto.builder()
+                        .token(jwtTokenProvider.createToken(String.valueOf(user.getId()),user.getAuth()))
+                        .build();
+
+                LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입 lgoger: {}",signInResultDto);
+                setSuccessResult(signInResultDto);
+                return signInResultDto;
+            }else{
+                throw new RuntimeException();
+            }
+
+        } catch (EntityNotFoundException e){
             SignInResultDto signInResultDto = new SignInResultDto();
 
             LOGGER.info("[getSignInResult] in : {}",signInResultDto);
             setFailResult(signInResultDto);
             return signInResultDto;
-        }else if(user != null && (passwordEncoder.matches(password, user.getPassword()))){
-            LOGGER.info("[getSignInResult] 패스워드 일치");
-            LOGGER.info("[getSignInResult] SignInResultDto 객체 생성");
 
-
-
-            History history = new History();
-
-            history.setName("로그인");
-            history.setIp(clientIp);
-            history.setUser(user);
-
-            history.setCreated(LocalDateTime.now());
-
-            History insertHistory = historyRepository.save(history);
-
-
-            SignInResultDto signInResultDto = SignInResultDto.builder()
-                    .token(jwtTokenProvider.createToken(String.valueOf(user.getId()),user.getAuth()))
-                    .build();
-
-            LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입 lgoger: {}",signInResultDto);
-            setSuccessResult(signInResultDto);
-            return signInResultDto;
-        }else{
-            throw new RuntimeException();
         }
+    }
+    @Override
+    public SignInResultDto mobileSignIn(String id,String password,String clientIp) throws RuntimeException{
+        LOGGER.info("[getSignInResult] signDateHandler로 회원 정보 요청");
+        //User user = userRepository.getByIdAndAuth(id,"ROLE_USER");
+        User user = userRepository.getById(id);
+        try {
+            LOGGER.info("[getSignInResult] Id : {}",user);
+            LOGGER.info("[getByID] id: {}",user);
 
+            LOGGER.info("[String clientIp] String clientIp: {}",clientIp);
+//            LOGGER.info("[getSignInResult] 패스워드 비교 수행 : {}",passwordEncoder.matches(password, user.getPassword()));
+
+            if(user == null)  {
+                SignInResultDto signInResultDto = new SignInResultDto();
+
+                LOGGER.info("[getSignInResult] null : {}",signInResultDto);
+                setFailResult(signInResultDto);
+                return signInResultDto;
+            }
+            else if(!passwordEncoder.matches(password, user.getPassword()))  {
+                SignInResultDto signInResultDto = new SignInResultDto();
+
+                LOGGER.info("[getSignInResult] in : {}",signInResultDto);
+                setFailResult(signInResultDto);
+                return signInResultDto;
+            }else if(user != null && (passwordEncoder.matches(password, user.getPassword()))){
+                LOGGER.info("[getSignInResult] 패스워드 일치");
+                LOGGER.info("[getSignInResult] SignInResultDto 객체 생성");
+
+                History history = new History();
+
+                history.setName("로그인");
+                history.setIp(clientIp);
+                history.setUser(user);
+                history.setCreated(LocalDateTime.now());
+                History insertHistory = historyRepository.save(history);
+
+                SignInResultDto signInResultDto = SignInResultDto.builder()
+                        .token(jwtTokenProvider.createToken(String.valueOf(user.getId()),user.getAuth()))
+                        .build();
+
+                LOGGER.info("[getSignInResult] SignInResultDto 객체에 값 주입 lgoger: {}",signInResultDto);
+                setSuccessResult(signInResultDto);
+                return signInResultDto;
+            }else{
+                throw new RuntimeException();
+            }
+
+        } catch (EntityNotFoundException e){
+            SignInResultDto signInResultDto = new SignInResultDto();
+
+            LOGGER.info("[getSignInResult] in : {}",signInResultDto);
+            setFailResult(signInResultDto);
+            return signInResultDto;
+
+        }
     }
 
     @Override
@@ -418,7 +527,9 @@ public class SignServiceImpl implements SignService {
             String name = getUser.getName();
             String customer_name = getUser.getCustomer_name();
             String email = getUser.getEmail();
+            String staff_name = getUser.getStaff_name();
 
+            String staff_phone = getUser.getStaff_phone();
 
 
             Car car = getUser.getCar();
@@ -436,6 +547,8 @@ public class SignServiceImpl implements SignService {
                     .email(email)
                     .code(code)
                     .phone(phone)
+                    .staff_name(staff_name)
+                    .staff_phone(staff_phone)
                     .updated(LocalDateTime.now())
                     .used(1)
                     .build();

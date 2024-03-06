@@ -19,6 +19,12 @@ public class Company extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long uid;
+
+    @ManyToOne(fetch = FetchType.EAGER)  // To,aOne은 fetch = FetchType.LAZY로 꼭 !!! 세팅
+    @JoinColumn(name="type_uid")
+    private Type type;
+
+
     @Column(nullable = false)
     private String code; // 사업자번호
 

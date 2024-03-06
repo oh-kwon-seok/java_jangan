@@ -88,6 +88,18 @@ public class UserOrderSubController {
         return ResponseEntity.status(HttpStatus.OK).body(selectedTotalUserOrderSub);
 
     }
+    @GetMapping(value= "/supply_price_select")
+    public ResponseEntity<List<UserOrderSub>> getUserOrderSubPrice(@ModelAttribute UserOrderSubSearchDto UserOrderSubSearchDto) throws RuntimeException{
+
+        long currentTime = System.currentTimeMillis();
+
+        List<UserOrderSub> selectedTotalUserOrderSub = userOrderSubService.getUserOrderSubPrice(UserOrderSubSearchDto);
+
+        LOGGER.info("[getTotalUserOrderSub] response Time: {}ms,{}", System.currentTimeMillis() - currentTime);
+
+        return ResponseEntity.status(HttpStatus.OK).body(selectedTotalUserOrderSub);
+
+    }
 
 
 

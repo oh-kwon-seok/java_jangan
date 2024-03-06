@@ -12,6 +12,10 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User,String>, UserRepositoryCustom {
 
     User getById(String id);
+
+    User getByIdAndAuth(String id,String auth);
+
+
     User findByCodeAndPhone(String code, String phone);
 
 
