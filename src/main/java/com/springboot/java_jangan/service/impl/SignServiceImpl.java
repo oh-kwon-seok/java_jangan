@@ -520,7 +520,7 @@ public class SignServiceImpl implements SignService {
 
         LOGGER.info("[selectedUser] selectedUser : {}", selectedUser);
         if (selectedUser.isPresent()) {
-            String init_password = "1111";
+            String init_password = "qwer12!@";
 
             User getUser = selectedUser.get();
             String id = getUser.getId();

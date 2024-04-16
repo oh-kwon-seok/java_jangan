@@ -38,6 +38,8 @@ public class QUserOrder extends EntityPathBase<UserOrder> {
 
     public final StringPath image_url = createString("image_url");
 
+    public final StringPath notice = createString("notice");
+
     public final StringPath order_status = createString("order_status");
 
     public final StringPath price_status = createString("price_status");

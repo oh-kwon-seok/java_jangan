@@ -2,6 +2,7 @@ package com.springboot.java_jangan.data.dao.impl;
 
 import ch.qos.logback.classic.Logger;
 import com.springboot.java_jangan.data.dao.ProductDAO;
+import com.springboot.java_jangan.data.dto.car.CarSearchDto;
 import com.springboot.java_jangan.data.dto.product.ProductDto;
 import com.springboot.java_jangan.data.dto.product.ProductSearchDto;
 import com.springboot.java_jangan.data.entity.*;
@@ -70,6 +71,11 @@ public class ProductDAOImpl implements ProductDAO {
     @Override
     public List<Product> selectTotalProduct(ProductSearchDto productSearchDto) {
         return productRepository.findAll(productSearchDto);
+
+    }
+    @Override
+    public List<Product> selectProduct(ProductSearchDto productSearchDto) {
+        return productRepository.findInfo(productSearchDto);
 
     }
 

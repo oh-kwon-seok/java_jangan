@@ -8,5 +8,7 @@ import java.util.List;
 public interface ProductRepositoryCustom {
     List<Product> findAll(ProductSearchDto productSearchDto);
 
+    List<Product> findInfo(ProductSearchDto productSearchDto);
+
 
 }

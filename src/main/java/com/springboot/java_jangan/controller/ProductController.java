@@ -5,7 +5,9 @@ import ch.qos.logback.classic.Logger;
 import com.springboot.java_jangan.data.dto.product.ProductDto;
 
 import com.springboot.java_jangan.data.dto.product.ProductSearchDto;
+import com.springboot.java_jangan.data.dto.userProduct.UserProductSearchDto;
 import com.springboot.java_jangan.data.entity.Product;
+import com.springboot.java_jangan.data.entity.UserProduct;
 import com.springboot.java_jangan.service.ProductService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,18 @@ public class ProductController {
         LOGGER.info("[getTotalProduct] response Time: {}ms,{}", System.currentTimeMillis() - currentTime);
 
         return ResponseEntity.status(HttpStatus.OK).body(selectedTotalProduct);
+
+    }
+    @GetMapping(value= "/info_select")
+    public ResponseEntity<List<Product>> getProduct(@ModelAttribute ProductSearchDto productSearchDto) throws RuntimeException{
+
+        long currentTime = System.currentTimeMillis();
+
+        List<Product> selectedProduct = productService.getProduct(productSearchDto);
+
+        LOGGER.info("[getTotalUserProduct] response Time: {}ms,{}", System.currentTimeMillis() - currentTime);
+
+        return ResponseEntity.status(HttpStatus.OK).body(selectedProduct);
 
     }
 

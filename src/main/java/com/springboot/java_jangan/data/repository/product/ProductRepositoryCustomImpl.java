@@ -7,6 +7,7 @@ import com.querydsl.core.types.Predicate;
 import com.springboot.java_jangan.controller.ProductController;
 
 import com.springboot.java_jangan.data.dto.product.ProductSearchDto;
+import com.springboot.java_jangan.data.dto.userProduct.UserProductSearchDto;
 import com.springboot.java_jangan.data.entity.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -88,6 +89,32 @@ public class ProductRepositoryCustomImpl extends QuerydslRepositorySupport imple
         }
 
         return productList;
+    }
+
+    @Override
+    public List<Product> findInfo(ProductSearchDto productSearchDto){
+
+        QProduct product = QProduct.product;
+        QCompany company = QCompany.company;
+        QType type = QType.type;
+
+
+        Predicate used = product.used.eq(1);
+
+
+        List<Tuple> results = from(product)
+                .leftJoin(product.company, company).fetchJoin()
+                .leftJoin(product.type, type).fetchJoin()
+                .select(product,company,type)
+                .where(used)
+                .fetch();
+        List<Product> productList = new ArrayList<>();
+        for (Tuple result : results) {
+            Product productEntity = result.get(product);
+            productList.add(productEntity);
+        }
+        return productList;
+
     }
 
 

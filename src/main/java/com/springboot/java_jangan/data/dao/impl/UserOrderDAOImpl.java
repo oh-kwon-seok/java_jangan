@@ -74,6 +74,7 @@ public class UserOrderDAOImpl implements UserOrderDAO {
 
         userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
         userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
+        userOrder.setNotice(String.valueOf(userOrderDto.getNotice()));
         userOrder.setReq_date(String.valueOf(userOrderDto.getReq_date()));
         userOrder.setReq_des(String.valueOf(userOrderDto.getReq_des()));
 
@@ -213,7 +214,7 @@ public class UserOrderDAOImpl implements UserOrderDAO {
             userOrder.setOrder_status(String.valueOf(userOrderDto.getOrder_status()));
             userOrder.setPrice_status(String.valueOf(userOrderDto.getPrice_status()));
             userOrder.setDescription(String.valueOf(userOrderDto.getDescription()));
-
+            userOrder.setNotice(String.valueOf(userOrderDto.getNotice()));
 
 
             userOrder.setAmount_array(String.valueOf(userOrderDto.getAmount_array()));
@@ -284,6 +285,37 @@ public class UserOrderDAOImpl implements UserOrderDAO {
                 userOrderSub.setPrice(Integer.parseInt(userOrderSubData.get("price").toString()));
                 userOrderSub.setBuy_price(Integer.parseInt(userOrderSubData.get("buy_price").toString()));
                 userOrderSub.setSupply_price(Integer.parseInt(userOrderSubData.get("supply_price").toString()));
+
+                if (!userOrderSubData.get("qty").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setQty(Integer.parseInt(userOrderSubData.get("qty").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setQty(0);
+                    }
+                }
+                if (!userOrderSubData.get("price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setPrice(Integer.parseInt(userOrderSubData.get("price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setPrice(0);
+                    }
+                }
+                if (!userOrderSubData.get("buy_price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setBuy_price(Integer.parseInt(userOrderSubData.get("buy_price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setBuy_price(0);
+                    }
+                }
+                if (!userOrderSubData.get("supply_price").toString().isEmpty()) {
+                    try {
+                        userOrderSub.setSupply_price(Integer.parseInt(userOrderSubData.get("supply_price").toString()));
+                    } catch (NumberFormatException e) {
+                        userOrderSub.setSupply_price(0);
+                    }
+                }
+
+
 
                 // product_uid 값이 있다면 product를 가져와서 userProduct에 설정
                 if (userOrderSubData.containsKey("uid")) {

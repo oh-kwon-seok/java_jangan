@@ -26,6 +26,10 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getTotalProduct(ProductSearchDto productSearchDto){
         return productDAO.selectTotalProduct(productSearchDto);
     }
+    @Override
+    public List<Product> getProduct(ProductSearchDto productSearchDto){
+        return productDAO.selectProduct(productSearchDto);
+    }
 
     @Override
     public Product saveProduct(ProductDto productDto) throws Exception {
