@@ -41,6 +41,15 @@ public class UserProductController {
         return ResponseEntity.status(HttpStatus.OK).body(selectedTotalUserProduct);
 
     }
+    @PostMapping(value= "/excel_upload", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<String> excelUploadUserProduct(@RequestBody Map<String, List<Map<String, Object>>> requestMap) throws Exception {
+        List<Map<String, Object>> requestList = requestMap.get("data");
+        LOGGER.info("LIST : {}",requestList);
+
+
+        userProductService.excelUploadUserProduct(requestList);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 업로드되었습니다.");
+    }
 
 
 

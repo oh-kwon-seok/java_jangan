@@ -11,5 +11,5 @@ public interface ProductRepository extends JpaRepository<Product,Long>, ProductR
 
 
     Product findByNameAndType_nameAndCompany_name(String name, String typeName,String companyName);
-
+    Product findByNameAndUsed(String name,Long used);
 }

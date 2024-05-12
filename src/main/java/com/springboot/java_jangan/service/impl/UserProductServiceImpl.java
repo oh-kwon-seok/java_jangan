@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserProductServiceImpl implements UserProductService {
@@ -25,6 +26,10 @@ public class UserProductServiceImpl implements UserProductService {
     @Override
     public List<UserProduct> getUserProduct(UserProductSearchDto userProductSearchDto){
         return userProductDAO.selectUserProduct(userProductSearchDto);
+    }
+    @Override
+    public void excelUploadUserProduct(List<Map<String, Object>> requestList) throws Exception {
+        userProductDAO.excelUploadUserProduct(requestList);
     }
 
 
