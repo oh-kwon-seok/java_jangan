@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -127,7 +128,15 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
             }
 
         }
-        Predicate dateRange = userOrder.created.between(start_date, end_date);
+        //Predicate dateRange = userOrder.created.between(start_date, end_date);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String start_dateString = start_date.format(formatter);
+        String end_dateString = end_date.format(formatter);
+
+        // 날짜 범위 조건 추가
+        Predicate dateRange = userOrder.req_date.between(start_dateString, end_dateString);
+
         // used 필드가 1인 항목만 검색 조건 추가
         Predicate used = userOrder.used.eq(1);
 
@@ -141,7 +150,7 @@ public class UserOrderRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
                 .select(userOrder,user,car)
                 .where(predicate,used,dateRange)
-                .orderBy(userOrder.created.desc()) // Order by created field in descending order
+                .orderBy(userOrder.req_date.desc()) // Order by created field in descending order
                 .fetch();
 
 
